@@ -1,6 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import { readFileSync } from 'node:fs'
+import { pathToFileURL } from "node:url";
 import { defineHook } from '@directus/extensions-sdk'
 import { static as serveStatic } from 'express'
 import ms from 'ms'
@@ -102,7 +103,11 @@ export const config: HookConfig = defineHook(async ({ init }, { env, logger }) =
           }
           else {
             template = indexProd
-            render = await (await import(resolve('dist/server/main.mjs'))).default
+            render = await (
+              await import(
+                pathToFileURL(resolve("dist/server/main.mjs")).href
+              )
+            ).default;
           }
           const initialState: InitialState = {
             access_token: null,
